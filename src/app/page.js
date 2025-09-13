@@ -149,7 +149,20 @@ export default function HomePage() {
         </div>
       </form>
       
-      {/* --- RESULTS CONTAINER --- */}
+      {!loading && !answer && !error && (
+        <div className="w-full mt-12">
+          <p className="text-center text-sm text-gray-500 mb-4">Or browse by category</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {CATEGORIES.map((category) => (
+              <Link href={`/category/${encodeURIComponent(category.slug)}`} key={category.slug} className="flex flex-col items-center justify-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md hover:border-blue-500 transition-all">
+                <span className="text-4xl mb-2">{category.icon}</span>
+                <span className="font-semibold text-gray-700 text-center">{category.name}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+      
       <div ref={resultsRef} className="w-full mt-8">
         {loading && <p className="text-center text-gray-500 py-4">Thinking...</p>}
         {error && <p className="text-center text-red-500 bg-red-100 p-4 rounded-md">{error}</p>}
@@ -182,23 +195,6 @@ export default function HomePage() {
             )}
           </div>
         )}
-      </div>
-
-      {/* --- CATEGORY GRID (MOVED TO THE BOTTOM) --- */}
-      <div className="w-full mt-20 mb-10">
-        <p className="text-center text-sm text-gray-500 mb-4">Or browse by category</p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {CATEGORIES.map((category) => (
-            <Link
-              href={`/category/${encodeURIComponent(category.slug)}`}
-              key={category.slug}
-              className="flex flex-col items-center justify-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md hover:border-blue-500 transition-all"
-            >
-              <span className="text-4xl mb-2">{category.icon}</span>
-              <span className="font-semibold text-gray-700 text-center">{category.name}</span>
-            </Link>
-          ))}
-        </div>
       </div>
     </>
   );

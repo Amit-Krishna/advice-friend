@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
@@ -56,37 +57,34 @@ export default function Header() {
                       <SearchComponent />
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        {/* Desktop Links - Hidden on Mobile */}
-                        <div className="hidden md:flex items-center gap-4">
-                            {isMounted && session && (
-                                <>
-                                    <Link href="/community" className="text-sm font-semibold text-gray-600 hover:text-black">Community</Link>
-                                    <Link href="/trends" className="text-sm font-semibold text-gray-600 hover:text-black">AI Trends</Link>
-                                    <Link href="/bookmarks" className="text-sm font-semibold text-gray-600 hover:text-black">My Bookmarks</Link>
-                                </>
-                            )}
-                        </div>
+                    {/* --- DESKTOP VIEW (Hidden on mobile) --- */}
+                    <div className="hidden md:flex items-center gap-4">
+                        {isMounted && session && (
+                            <>
+                                <Link href="/community" className="text-sm font-semibold text-gray-600 hover:text-black">Community</Link>
+                                <Link href="/trends" className="text-sm font-semibold text-gray-600 hover:text-black">AI Trends</Link>
+                                <Link href="/bookmarks" className="text-sm font-semibold text-gray-600 hover:text-black">My Bookmarks</Link>
+                            </>
+                        )}
                         
-                        {/* Auth Buttons & Hamburger Menu Toggle */}
                         {!isMounted ? (
                             <div className="h-10 w-24 bg-gray-200 rounded-md animate-pulse"></div>
                         ) : session ? (
-                            <>
-                                {/* Desktop Logout Button */}
-                                <button onClick={handleLogout} className="hidden md:flex px-4 py-2 bg-red-500 text-white rounded-md text-sm font-semibold hover:bg-red-600">
-                                    Logout
-                                </button>
-                                {/* Mobile Hamburger Button */}
-                                <button onClick={() => setIsMenuOpen(true)} className="md:hidden" aria-label="Open menu">
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
-                                </button>
-                            </>
+                            <button onClick={handleLogout} className="px-4 py-2 bg-red-500 text-white rounded-md text-sm font-semibold hover:bg-red-600">
+                                Logout
+                            </button>
                         ) : (
                             <button onClick={() => setShowAuth(true)} className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-semibold hover:bg-blue-700">
                                 Login
                             </button>
                         )}
+                    </div>
+                    
+                    {/* --- MOBILE VIEW TRIGGER (Hamburger, visible only on mobile) --- */}
+                    <div className="md:hidden">
+                        <button onClick={() => setIsMenuOpen(true)} aria-label="Open menu">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        </button>
                     </div>
                 </div>
 
@@ -95,10 +93,11 @@ export default function Header() {
                 </div>
             </header>
 
+            {/* Mobile Menu Overlay */}
             {isMenuOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden" onClick={() => setIsMenuOpen(false)}>
                     <div className="fixed top-0 right-0 h-full w-64 bg-white shadow-lg p-4" onClick={(e) => e.stopPropagation()}>
-                        <button onClick={() => setIsMenuOpen(false)} className="absolute top-4 right-4" aria-label="Close menu">
+                        <button onClick={() => setIsMenu-Open(false)} className="absolute top-4 right-4" aria-label="Close menu">
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                         </button>
                         <nav className="mt-12 flex flex-col space-y-4">

@@ -1,0 +1,8 @@
+# supabase/config.toml
+
+[functions.daily-trend-scraper]
+  enabled = true
+  verify_jwt = true
+  import_map = "./functions/daily-trend-scraper/deno.json"
+  entrypoint = "./functions/daily-trend-scraper/index.ts"
+  

@@ -2,7 +2,7 @@
 
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "../components/Header"; // Import our reusable Header
+import Header from "../components/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,11 +14,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      {/* This head section is CRUCIAL for mobile responsiveness */}
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </head>
       <body className={`${inter.className} bg-gray-50`}>
         <Header />
         <main className="flex flex-col items-center p-4 sm:p-6">
           <div className="w-full max-w-3xl">
-            {/* The content from your page.js files will go here */}
             {children}
           </div>
         </main>

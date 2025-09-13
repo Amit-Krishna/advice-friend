@@ -120,7 +120,7 @@ export default function HomePage() {
 
   return (
     <>
-      <h1 className="text-4xl md:text-6xl font-bold text-center text-gray-800 mb-2">
+      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-center text-gray-800 mb-2">
         The Smartest Advice Friend
       </h1>
       <p className="text-center text-gray-500 mb-8">

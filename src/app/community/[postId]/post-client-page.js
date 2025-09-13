@@ -1,7 +1,7 @@
 // File: src/app/community/[postId]/post-client-page.js
 
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
@@ -13,7 +13,8 @@ export default function PostClientPage({ postId }) {
   const [session, setSession] = useState(null);
   const supabase = createClientComponentClient();
 
-  const fetchPost = async () => {
+  // Wrap fetchPost in useCallback to prevent it from being recreated on every render
+  const fetchPost = useCallback(async () => {
     try {
       setError(null);
       const response = await fetch(`/api/community/posts/${postId}`);
@@ -27,7 +28,7 @@ export default function PostClientPage({ postId }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [postId]);
 
   useEffect(() => {
     const getSession = async () => {
@@ -36,7 +37,7 @@ export default function PostClientPage({ postId }) {
     };
     getSession();
     fetchPost();
-  }, [postId, supabase]);
+  }, [postId, supabase, fetchPost]); // Added fetchPost to the dependency array
 
   const handleReplySubmit = async (e) => {
     e.preventDefault();
@@ -61,13 +62,10 @@ export default function PostClientPage({ postId }) {
   if (!post) return <p className="text-center mt-12">Post not found.</p>;
 
   return (
-    // --- THIS IS THE FIX: Added styling to the main container ---
     <div className="bg-white p-6 rounded-lg border border-gray-200">
       <div className="mb-8">
         <Link href="/community" className="text-blue-600 hover:underline">&larr; Back to Forum</Link>
       </div>
-
-      {/* --- ORIGINAL POST --- */}
       <div className="border-b pb-6 mb-6">
         <h1 className="text-2xl font-bold mb-2">{post.title}</h1>
         <p className="text-xs text-gray-400 mb-4">
@@ -77,8 +75,6 @@ export default function PostClientPage({ postId }) {
           <p>{post.content}</p>
         </div>
       </div>
-
-      {/* --- REPLIES SECTION --- */}
       <h2 className="text-xl font-bold mb-4">Replies ({post.community_replies.length})</h2>
       <div className="space-y-4">
         {post.community_replies.length > 0 ? (
@@ -94,8 +90,6 @@ export default function PostClientPage({ postId }) {
           <p className="text-gray-500">Be the first to reply!</p>
         )}
       </div>
-
-      {/* --- REPLY FORM --- */}
       {session && (
         <div className="mt-8 pt-6 border-t">
             <h3 className="text-lg font-bold mb-2">Leave a Reply</h3>

@@ -43,16 +43,21 @@ function SearchResults() {
     router.push(`/search?q=${encodeURIComponent(query)}&category=${encodeURIComponent(newCategory)}`);
   };
 
-  if (loading) return <p className="text-center mt-8">Searching for "{query}"...</p>;
-  if (error) return <p className="text-center mt-8 text-red-500">{error}</p>;
-  if (!query) return <p className="text-center mt-8 text-gray-500">Please enter a search term.</p>;
+  if (loading) {
+    return <p className="text-center mt-8">Searching for &apos;{query}&apos;...</p>;
+  }
+  if (error) {
+    return <p className="text-center mt-8 text-red-500">{error}</p>;
+  }
+  if (!query) {
+    return <p className="text-center mt-8 text-gray-500">Please enter a search term.</p>;
+  }
 
   return (
-    // Note: The outer wrapping div has been removed.
     <div>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <h1 className="text-2xl font-bold mb-4 md:mb-0">
-          Results for: <span className="text-blue-600">"{query}"</span>
+          Results for: <span className="text-blue-600">&apos;{query}&apos;</span>
         </h1>
         <div className="flex items-center gap-2">
             <label htmlFor="category-filter" className="text-sm font-medium text-gray-600">Filter by:</label>
@@ -68,7 +73,6 @@ function SearchResults() {
             </select>
         </div>
       </div>
-
       {results.length === 0 ? (
         <p className="text-gray-500 bg-white p-8 text-center rounded-lg border">No results found for this criteria.</p>
       ) : (

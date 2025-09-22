@@ -1,6 +1,5 @@
-// File: src/components/Header.js (Definitive Final Version)
-
 "use client";
+
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
@@ -15,7 +14,7 @@ export default function Header() {
     const supabase = createClient();
 
     useEffect(() => {
-        setIsMounted(true);
+        setIsMounted(true); // This tells us we are now on the client.
         
         const getSession = async () => {
             const { data: { session } } = await supabase.auth.getSession();
@@ -42,6 +41,8 @@ export default function Header() {
         setShowAuth(true);
     };
 
+    // On the server and during the initial client render, we show a static placeholder
+    // to prevent any hydration errors.
     if (!isMounted) {
         return (
              <header className="w-full p-4 bg-white border-b sticky top-0 z-40">
@@ -50,12 +51,14 @@ export default function Header() {
                    <div className="flex-1 hidden sm:flex justify-center px-4">
                         <div className="h-10 w-full max-w-md bg-gray-200 rounded-full animate-pulse"></div>
                    </div>
-                   <div className="h-10 w-24 bg-gray-200 rounded-md animate-pulse"></div>
+                   <div className="h-10 w-24 bg-gray-200 rounded-md animate-pulse md:hidden"></div>
+                   <div className="hidden md:flex h-10 w-24 bg-gray-200 rounded-md animate-pulse"></div>
                 </div>
             </header>
         );
     }
 
+    // After mounting, we render the real, interactive header.
     return (
         <>
             {showAuth && (

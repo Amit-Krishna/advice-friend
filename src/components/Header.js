@@ -33,8 +33,6 @@ export default function Header() {
     const handleLogout = async () => {
         setIsMenuOpen(false);
         await supabase.auth.signOut();
-        // Removed window.location.reload() for a smoother user experience.
-        // The onAuthStateChange listener handles the UI update automatically.
     };
 
     const handleLoginClick = () => {
@@ -42,8 +40,8 @@ export default function Header() {
         setShowAuth(true);
     };
 
+    // The placeholder is rendered on the server and on the initial client load
     if (!isMounted) {
-        // This placeholder is essential to prevent hydration mismatch errors.
         return (
              <header className="w-full p-4 bg-white border-b sticky top-0 z-40">
                 <div className="max-w-6xl mx-auto flex justify-between items-center gap-4 h-[56px]">
@@ -58,6 +56,7 @@ export default function Header() {
         );
     }
 
+    // After mounting, the REAL interactive header is rendered.
     return (
         <>
             {showAuth && (
@@ -78,38 +77,33 @@ export default function Header() {
                       <SearchComponent />
                     </div>
 
-                    {/* --- [FIXED & REFACTORED] DESKTOP & MOBILE NAVIGATION --- */}
+                    {/* --- [THE DEFINITIVE FIX] --- */}
+                    {/* We only render the interactive navigation parts AFTER the component has mounted on the client. */}
+                    {/* This completely prevents any server-client hydration mismatch for this section. */}
                     <div className="flex items-center gap-4">
                         {session ? (
                             <>
-                                {/* Logged-in: Desktop Links (hidden on mobile) */}
                                 <nav className="hidden md:flex items-center gap-4">
                                     <Link href="/community" className="text-sm font-semibold text-gray-600 hover:text-black">Community</Link>
                                     <Link href="/trends" className="text-sm font-semibold text-gray-600 hover:text-black">AI Trends</Link>
                                     <Link href="/bookmarks" className="text-sm font-semibold text-gray-600 hover:text-black">My Bookmarks</Link>
                                 </nav>
-                                {/* Logged-in: Desktop Logout Button (hidden on mobile) */}
                                 <button onClick={handleLogout} className="hidden md:block px-4 py-2 bg-red-500 text-white rounded-md text-sm font-semibold hover:bg-red-600">
                                     Logout
                                 </button>
-                                {/* Logged-in: Mobile Menu Trigger (visible only on mobile) */}
                                 <div className="md:hidden">
                                     <button onClick={() => setIsMenuOpen(true)} aria-label="Open user menu">
                                         <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
-                                                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" /></svg>
                                         </div>
                                     </button>
                                 </div>
                             </>
                         ) : (
                             <>
-                                {/* Logged-out: Desktop Login Button (hidden on mobile) */}
                                 <button onClick={() => setShowAuth(true)} className="hidden md:block px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-semibold hover:bg-blue-700">
                                     Login
                                 </button>
-                                {/* Logged-out: Mobile Menu Trigger (visible only on mobile) */}
                                 <div className="md:hidden">
                                     <button onClick={() => setIsMenuOpen(true)} aria-label="Open menu">
                                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
@@ -125,7 +119,6 @@ export default function Header() {
                 </div>
             </header>
 
-            {/* Mobile Menu Overlay */}
             {isMenuOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden" onClick={() => setIsMenuOpen(false)}>
                     <div className="fixed top-0 right-0 h-full w-64 bg-white shadow-lg p-4" onClick={(e) => e.stopPropagation()}>

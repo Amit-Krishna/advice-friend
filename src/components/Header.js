@@ -14,7 +14,7 @@ export default function Header() {
     const supabase = createClient();
 
     useEffect(() => {
-        setIsMounted(true); // This tells us we are now on the client.
+        setIsMounted(true); // This tells us we are now safely on the client.
         
         const getSession = async () => {
             const { data: { session } } = await supabase.auth.getSession();
@@ -41,8 +41,9 @@ export default function Header() {
         setShowAuth(true);
     };
 
-    // On the server and during the initial client render, we show a static placeholder
-    // to prevent any hydration errors.
+    // THIS IS THE GUARANTEED FIX:
+    // Until the component has mounted on the client, we render a static placeholder.
+    // This prevents any mismatch between the server-rendered HTML and the initial client render.
     if (!isMounted) {
         return (
              <header className="w-full p-4 bg-white border-b sticky top-0 z-40">
@@ -51,14 +52,15 @@ export default function Header() {
                    <div className="flex-1 hidden sm:flex justify-center px-4">
                         <div className="h-10 w-full max-w-md bg-gray-200 rounded-full animate-pulse"></div>
                    </div>
-                   <div className="h-10 w-24 bg-gray-200 rounded-md animate-pulse md:hidden"></div>
+                   {/* Placeholders for both mobile and desktop controls */}
+                   <div className="h-10 w-10 bg-gray-200 rounded-full animate-pulse md:hidden"></div>
                    <div className="hidden md:flex h-10 w-24 bg-gray-200 rounded-md animate-pulse"></div>
                 </div>
             </header>
         );
     }
 
-    // After mounting, we render the real, interactive header.
+    // After mounting, the real, interactive header is rendered.
     return (
         <>
             {showAuth && (

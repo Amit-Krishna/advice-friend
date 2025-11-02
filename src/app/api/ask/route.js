@@ -11,7 +11,7 @@ const categories = [
 // --- A Helper Function for AI-Powered Classification ---
 async function getCategoryForQuestion(question, genAI) {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
 
     const prompt = `Your task is to perform text classification. I will provide a user's question and a list of categories. You must respond with only the single most relevant category name from the list.
 
@@ -75,7 +75,7 @@ export async function POST(req) {
     const [answerResponse, category] = await Promise.all([
       // Task 1: Generate the detailed, level-aware answer
       (async () => {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
         
         // 3. Inject the dynamic instruction into our main prompt
         const prompt = `Act as a world-class expert advisor. ${levelInstruction} 
@@ -116,7 +116,7 @@ export async function POST(req) {
     return new Response(JSON.stringify({ answer: answerResponse, adviceId: newAdvice.id }));
 
   } catch (error) {
-    console.error("Error in ask API:", error);
+    console.error("DETAILED ERROR IN /api/ask:", error); 
     return new Response(JSON.stringify({ error: "Failed to get response" }), { status: 500 });
   }
 }
